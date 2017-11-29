@@ -1,0 +1,79 @@
+var drops = [];		//array of droplets
+var speed = 5;		//speed of the human
+
+function setup() 
+{
+  	createCanvas(1080, 860);	//creating the canvas
+	Mann = new Mann();			//creating the human of class Mann
+  
+  	for (var i = 0; i < 500; i++) 	//filling in the array with objects from class Drop
+  	{
+    	drops[i] = new Drop();
+    }
+}
+
+function draw() 
+{
+ 	 background(232,232,232);	//setting the background colour
+
+ 	 Mann.update();				//moving the human
+ 	 Mann.show();				//drawing the human
+
+    for (var i = 0; i < drops.length; i++) 
+    {
+    	drops[i].fall();		//the droplets fall
+    	drops[i].show();		//drawing the droplets
+    }
+}
+
+function Mann()					//defining class Mann
+{
+    this.x = 0;					//starting x
+    this.y = 820;				//starting y
+
+    this.update = function()	//movement of the human
+    {
+        this.x = this.x + speed;	//x coordinate increases with the speed
+        
+        if(this.x == width)		//check if it leaves the screen
+        {
+            this.x = 0;			//go back to the beginning
+            speed = speed + 1;	//increase the movement speed
+        }
+    }
+
+    this.show = function()		//draw the human
+    {
+        fill(255);				//choose the color
+        rect(this.x, this.y, 40, 40);	//draw a rectangle in the place of the human
+    }
+}
+
+function Drop()
+{
+    this.x = random(width);			//x coordinate becomes random
+    this.y = random(-500, -50);		//y coordinate becomes something above the screen
+    this.z = random(5, 20);			//z coordinate becomes some random depth
+    this.len = map(this.z, 0, 20, 10, 20);
+    this.yspeed = map(this.z, 0, 20, 1, 20);
+
+    this.fall = function()			//makes the droplets fall
+    {
+        this.y += this.yspeed;		
+		
+		if (this.y > height) 		//checks if they exit the screen
+		{
+            this.y = random(-200, -100);
+            this.x = random(width);
+            this.yspeed = map(this.z, 0, 20, 4, 10);
+        }
+    }
+
+    this.show = function() 			//draw the droplet
+    {
+        var thick = map(this.z, 0, 20, 1, 3);
+        strokeWeight(thick);
+        stroke(25,25,112);
+        line(this.x, this.y, this.x, this.y+this.len);
+    }
+}
